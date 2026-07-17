@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ToolHub LK - Free Online Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --primary: #6366f1; --secondary: #8b5cf6; --card: rgba(30, 41, 59, 0.6); --text: #e2e8f0; --success: #22c55e; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+  body { background: linear-gradient(135deg, #0f172a, #1e1b4b); color: var(--text); min-height: 100vh; padding: 30px 20px; }
+.container { max-width: 850px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 40px; }
+  header h1 { font-size: 2.5rem; font-weight: 700; background: linear-gradient(90deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  header p { opacity: 0.7; margin-top: 10px; }
+.card { background: var(--card); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 30px; margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+.card h2 { font-size: 1.5rem; margin-bottom: 15px; }
+  input, textarea { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text); border-radius: 10px; padding: 12px; width: 100%; margin-bottom: 10px; outline: none; }
+  input:focus { border-color: var(--primary); }
+  input[type="file"] { padding: 15px; border: 2px dashed var(--primary); cursor: pointer; }
+.row { display: flex; gap: 15px; }
+.row input { width: 50%; }
+.btn { background: linear-gradient(90deg, var(--primary), var(--secondary)); color: white; border: none; padding: 14px; border-radius: 12px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; }
+.btn-outline { background: transparent; border: 1px solid var(--primary); width: 49%; }
+.btn-group { display: flex; gap: 10px; }
+  img { width: 100%; border-radius: 12px; margin-top: 15px; }
+.note { font-size: 0.85rem; opacity: 0.7; margin-bottom: 10px; }
+  footer { text-align: center; opacity: 0.5; margin-top: 40px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header><h1>ToolHub LK</h1><p>Free & Fast Online Tools for Everyone 🇱🇰</p></header>
+
+  <!-- 1. EMAIL SIGN UP TO YOUR EMAIL -->
+  <div class="card">
+    <h2>📧 Email Sign Up</h2>
+    <p class="note">Newsletter walata join wenna</p>
+    <form action="https://formsubmit.co/ujeewaka.kalhara.adikari@gmail.com" method="POST">
+      <!-- Formsubmit settings -->
+      <input type="hidden" name="_subject" value="New ToolHub Signup!">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_next" value="https://toolhub5.netlify.app/">
+
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="email" name="email" placeholder="Your Email" required>
+      <button class="btn" type="submit">Sign Up Now</button>
+    </form>
+    <p class="note" style="margin-top:15px;">1st time eka confirm karanna oya email ekata ena mail eka click karanna</p>
+  </div>
+
+  <!-- 2. IMAGE RESIZER -->
+  <div class="card">
+    <h2>🖼️ Image Resizer</h2>
+    <input type="file" id="upload" accept="image/*">
+    <div class="row"><input type="number" id="width" placeholder="Width px"><input type="number" id="height" placeholder="Height px"></div>
+    <div style="display:flex;align-items:center;gap:8px;margin:10px 0;"><input type="checkbox" id="keepRatio"><label for="keepRatio">Keep Aspect Ratio</label></div>
+    <button class="btn" onclick="resizeImage()">Resize & Download</button>
+    <canvas id="canvas" style="display:none;"></canvas><img id="preview" style="display:none;">
+  </div>
+
+  <!-- 3. IMAGE TO URL CONVERTER -->
+  <div class="card">
+    <h2>🔗 Image to Base64 URL Converter</h2>
+    <p class="note">Image eka upload karanna. Code eke danna puluwan URL ekak labei</p>
+    <input type="file" id="imgToUrlUpload" accept="image/*" onchange="convertToBase64()">
+    <img id="urlPreview" style="display:none; max-height:200px; object-fit:contain;">
+    <label>Base64 URL Output</label>
+    <textarea id="base64Output" rows="4" placeholder="data:image/png;base64..." readonly></textarea>
+    <div class="btn-group">
+      <button class="btn btn-outline" onclick="copyBase64()">📋 Copy URL</button>
+      <button class="btn btn-outline" onclick="downloadBase64()">💾 Download</button>
+    </div>
+  </div>
+
+  <!-- 4. YOUTUBE TOOL -->
+  <div class="card">
+    <h2>📺 YouTube Thumbnail + Embed</h2>
+    <p class="note">YouTube video link eka paste karanna</p>
+    <input type="text" id="ytLink" placeholder="https://www.youtube.com/watch?v=xxxxx" oninput="showYT()">
+    <div id="ytBox" style="display:none;">
+      <img id="ytThumb">
+      <div class="btn-group">
+        <button class="btn btn-outline" onclick="downloadThumb('maxresdefault')">HD Thumb</button>
+        <button class="btn btn-outline" onclick="downloadThumb('hqdefault')">SD Thumb</button>
+      </div>
+      <div id="ytEmbed"></div>
+    </div>
+  </div>
+
+  <!-- 5. SINHALA CONVERTER -->
+  <div class="card">
+    <h2>📝 Sinhala Unicode Converter</h2>
+    <p class="note">Singlish type karanna → Instant Unicode</p>
+    <label>Singlish Input</label>
+    <textarea id="singlishInput" rows="3" placeholder="ohoma komada?"></textarea>
+    <button class="btn" onclick="convertToUnicode()">Convert</button>
+    <label>Unicode Output</label>
+    <textarea id="unicodeOutput" rows="3" placeholder="ඕහොම කොහොමද?" readonly></textarea>
+    <button class="btn btn-outline" onclick="copyText()">📋 Copy Text</button>
+  </div>
+
+  <footer>© 2026 ToolHub LK. Made with ❤️</footer>
+</div>
+
+<script>
+// ===== IMAGE RESIZER =====
+let originalImg = new Image();
+document.getElementById('upload').onchange = function(e){
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = event => originalImg.src = event.target.result;
+  reader.readAsDataURL(file);
+}
+document.getElementById('width').oninput = function(){
+  if(document.getElementById('keepRatio').checked && originalImg.width){
+    let ratio = originalImg.height / originalImg.width;
+    document.getElementById('height').value = Math.round(this.value * ratio);
+  }
+}
+function resizeImage() {
+  const file = document.getElementById('upload').files[0];
+  const w = document.getElementById('width').value;
+  const h = document.getElementById('height').value;
+  if(!file ||!w ||!h) { alert("Image + Width + Height denna"); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.getElementById('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const url = canvas.toDataURL("image/jpeg", 0.9);
+      document.getElementById('preview').src = url;
+      document.getElementById('preview').style.display = 'block';
+      const a = document.createElement('a'); a.href = url; a.download = 'resized.jpg'; a.click();
+    }
+    img.src = e.target.result;
+  }
+  reader.readAsDataURL(file);
+}
+
+// ===== IMAGE TO BASE64 URL =====
+function convertToBase64(){
+  const file = document.getElementById('imgToUrlUpload').files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const base64 = e.target.result;
+    document.getElementById('base64Output').value = base64;
+    document.getElementById('urlPreview').src = base64;
+    document.getElementById('urlPreview').style.display = 'block';
+  }
+  reader.readAsDataURL(file);
+}
+function copyBase64(){
+  navigator.clipboard.writeText(document.getElementById('base64Output').value);
+  alert('Base64 URL Copied!');
+}
+function downloadBase64(){
+  const text = document.getElementById('base64Output').value;
+  const blob = new Blob([text], {type: 'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'image-url.txt';
+  a.click();
+}
+
+// ===== YOUTUBE =====
+let currentVideoId = "";
+function getVideoId(url){ const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/; const match = url.match(regExp); return (match && match[7].length == 11)? match[7] : false; }
+function showYT(){ const id = getVideoId(document.getElementById('ytLink').value); if(id){ currentVideoId=id; document.getElementById('ytBox').style.display='block'; document.getElementById('ytThumb').src=`https://img.youtube.com/vi/${id}/maxresdefault.jpg`; document.getElementById('ytEmbed').innerHTML=`<iframe height="400" src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>`; } else { document.getElementById('ytBox').style.display='none'; } }
+function downloadThumb(q){ const a=document.createElement('a'); a.href=`https://img.youtube.com/vi/${currentVideoId}/${q}.jpg`; a.download=`thumbnail-${q}.jpg`; a.click(); }
+
+// ===== SINHALA CONVERTER =====
+function escapeRegExp(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
+const sinhalaMap={"kh":"ඛ","gh":"ඝ","ch":"ච","Ch":"ඡ","jh":"ඣ","Th":"ඨ","Dh":"ඪ","ph":"ඵ","bh":"භ","ng":"ඞ","nj":"ඤ","aa":"ආ","ae":"ඇ","aee":"ඈ","ii":"ඊ","uu":"ඌ","ee":"ඒ","oo":"ඕ","ai":"ඓ","au":"ඖ","k":"ක","g":"ග","c":"ස","j":"ජ","t":"ත","d":"ද","n":"න","p":"ප","b":"බ","m":"ම","y":"ය","r":"ර","l":"ල","v":"ව","s":"ස","h":"හ","L":"ළ","f":"ෆ","a":"අ","i":"ඉ","u":"උ","e":"එ","o":"ඔ","M":"ං","H":"ඃ","Z":"්"," ":" "};
+function convertToUnicode(){ let text=document.getElementById('singlishInput').value.toLowerCase(); Object.keys(sinhalaMap).sort((a,b)=>b.length-a.length).forEach(k=>{text=text.replace(new RegExp(escapeRegExp(k),'g'),sinhalaMap[k]);}); document.getElementById('unicodeOutput').value=text.replace(/Z/g,"්"); }
+function copyText(){ navigator.clipboard.writeText(document.getElementById('unicodeOutput').value); alert('Copied to clipboard!'); }
+</script>
+
+</body>
+</html>
