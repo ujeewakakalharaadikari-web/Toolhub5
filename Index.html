@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ToolHub LK - Free Online Tools</title>
@@ -34,23 +35,31 @@
   <header><h1>ToolHub LK</h1><p>Free & Fast Online Tools for Everyone 🇱🇰</p></header>
 
   <!-- 1. EMAIL SIGN UP TO YOUR EMAIL -->
-  <div class="card">
-    <h2>📧 Email Sign Up</h2>
-    <p class="note">Newsletter walata join wenna</p>
-    <form action="https://formsubmit.co/ujeewaka.kalhara.adikari@gmail.com" method="POST">
-      <!-- Formsubmit settings -->
-      <input type="hidden" name="_subject" value="New ToolHub Signup!">
-      <input type="hidden" name="_captcha" value="false">
-      <input type="hidden" name="_template" value="table">
-      <input type="hidden" name="_next" value="https://toolhub5.netlify.app/">
+  <div class="signup-box">
+  <h3>Join ToolHub5</h3>
+  <input type="email" id="email" placeholder="Your Email" required>
+  <input type="password" id="password" placeholder="Password" required>
+  <button class="btn" onclick="signUp()">Sign Up Now</button>
+  <p id="msg"></p>
+</div>
 
-      <input type="text" name="name" placeholder="Your Name" required>
-      <input type="email" name="email" placeholder="Your Email" required>
-      <button class="btn" type="submit">Sign Up Now</button>
-    </form>
-    <p class="note" style="margin-top:15px;">1st time eka confirm karanna oya email ekata ena mail eka click karanna</p>
-  </div>
+<script>
+const SUPABASE_URL = 'https://mjemanhljowuxdrudbjx.supabase.co'
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qZW1hbmhsam93dXhkcnVkYmp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNjY2MzcsImV4cCI6MjA5OTg0MjYzN30.jhKXXrDArmvUS2xnlCXMfmfmBbo3mJKhiHai7xav6SU'
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
+async function signUp() {
+  const email = document.getElementById('email').value
+  const password = document.getElementById('password').value
+  const { data, error } = await supabase.auth.signUp({ email, password })
+  
+  if(error) {
+    document.getElementById('msg').innerText = error.message
+  } else {
+    document.getElementById('msg').innerText = "Check your email to confirm! ✅"
+  }
+}
+</script>
   <!-- 2. IMAGE RESIZER -->
   <div class="card">
     <h2>🖼️ Image Resizer</h2>
