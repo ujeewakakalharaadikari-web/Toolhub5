@@ -188,6 +188,8 @@ function escapeRegExp(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}
 const sinhalaMap={"kh":"ඛ","gh":"ඝ","ch":"ච","Ch":"ඡ","jh":"ඣ","Th":"ඨ","Dh":"ඪ","ph":"ඵ","bh":"භ","ng":"ඞ","nj":"ඤ","aa":"ආ","ae":"ඇ","aee":"ඈ","ii":"ඊ","uu":"ඌ","ee":"ඒ","oo":"ඕ","ai":"ඓ","au":"ඖ","k":"ක","g":"ග","c":"ස","j":"ජ","t":"ත","d":"ද","n":"න","p":"ප","b":"බ","m":"ම","y":"ය","r":"ර","l":"ල","v":"ව","s":"ස","h":"හ","L":"ළ","f":"ෆ","a":"අ","i":"ඉ","u":"උ","e":"එ","o":"ඔ","M":"ං","H":"ඃ","Z":"්"," ":" "};
 function convertToUnicode(){ let text=document.getElementById('singlishInput').value.toLowerCase(); Object.keys(sinhalaMap).sort((a,b)=>b.length-a.length).forEach(k=>{text=text.replace(new RegExp(escapeRegExp(k),'g'),sinhalaMap[k]);}); document.getElementById('unicodeOutput').value=text.replace(/Z/g,"්"); }
 function copyText(){ navigator.clipboard.writeText(document.getElementById('unicodeOutput').value); alert('Copied to clipboard!'); }
+// ======= video converter ======
+<a href="/video-converter.html">🎵 Video to MP3 Converter</a>
 </script>
 
 </body>
