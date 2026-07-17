@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ToolHub LK - Free Online Tools</title>
@@ -27,6 +26,20 @@
   img { width: 100%; border-radius: 12px; margin-top: 15px; }
 .note { font-size: 0.85rem; opacity: 0.7; margin-bottom: 10px; }
   footer { text-align: center; opacity: 0.5; margin-top: 40px; }
+.auth-card { background: var(--card); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 30px; margin-bottom: 30px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+.auth-card h3 { font-size: 1.3rem; margin-bottom: 15px; }
+.auth-tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+.auth-tab { flex: 1; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--text); padding: 10px; border-radius: 10px; cursor: pointer; opacity: 0.6; font-weight: 600; }
+.auth-tab.active { opacity: 1; border-color: var(--primary); background: rgba(99,102,241,0.15); }
+.google-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: #fff; color: #1f2937; border: none; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; width: 100%; margin-bottom: 15px; }
+.google-btn svg { width: 18px; height: 18px; }
+.divider { display: flex; align-items: center; gap: 10px; opacity: 0.5; font-size: 0.85rem; margin: 15px 0; }
+.divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,0.15); }
+#authMsg { font-size: 0.9rem; margin-top: 10px; min-height: 1.2em; }
+#authMsg.error { color: #f87171; }
+#authMsg.success { color: var(--success); }
+.user-panel { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.user-panel .btn-outline { width: auto; padding: 10px 18px; }
 </style>
 </head>
 <body>
@@ -34,32 +47,126 @@
 <div class="container">
   <header><h1>ToolHub LK</h1><p>Free & Fast Online Tools for Everyone 🇱🇰</p></header>
 
-  <!-- 1. EMAIL SIGN UP TO YOUR EMAIL -->
-  <div class="signup-box">
-  <h3>Join ToolHub5</h3>
-  <input type="email" id="email" placeholder="Your Email" required>
-  <input type="password" id="password" placeholder="Password" required>
-  <button class="btn" onclick="signUp()">Sign Up Now</button>
-  <p id="msg"></p>
-</div>
+  <!-- ACCOUNT / SIGN UP -->
+  <div class="auth-card" id="authCard">
+    <div id="loggedOutView">
+      <h3>Join ToolHub LK</h3>
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabSignup" onclick="switchTab('signup')">Sign Up</button>
+        <button class="auth-tab" id="tabLogin" onclick="switchTab('login')">Log In</button>
+      </div>
 
-<script>
-const SUPABASE_URL = 'https://mjemanhljowuxdrudbjx.supabase.co'
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qZW1hbmhsam93dXhkcnVkYmp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNjY2MzcsImV4cCI6MjA5OTg0MjYzN30.jhKXXrDArmvUS2xnlCXMfmfmBbo3mJKhiHai7xav6SU'
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+      <button class="google-btn" onclick="continueWithGoogle()">
+        <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.9 32.6 29.4 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.3 0 10.2-2 13.9-5.4l-6.4-5.4C29.4 34.9 26.8 36 24 36c-5.4 0-9.9-3.4-11.5-8.2l-6.5 5C9.6 39.6 16.3 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.7 2-2 3.7-3.7 5l6.4 5.4C40.9 35.8 44 30.4 44 24c0-1.3-.1-2.7-.4-3.5z"/></svg>
+        Continue with Google
+      </button>
+      <div class="divider">or</div>
 
-async function signUp() {
-  const email = document.getElementById('email').value
+      <input type="text" id="fullName" placeholder="Full Name" style="display:none;">
+      <input type="email" id="email" placeholder="Your Email" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button class="btn" id="authSubmit" onclick="submitAuth()">Sign Up Now</button>
+      <p id="authMsg"></p>
+    </div>
+
+    <div id="loggedInView" class="user-panel" style="display:none;">
+      <span id="welcomeMsg"></span>
+      <button class="btn-outline" style="border-radius:12px;" onclick="logOut()">Log Out</button>
+    </div>
+  </div>
+
+<script type="module">
+import netlifyIdentity from 'https://esm.sh/@netlify/identity@1'
+
+let mode = 'signup'
+
+function showMsg(text, type) {
+  const el = document.getElementById('authMsg')
+  el.textContent = text
+  el.className = type || ''
+}
+
+function renderUser(user) {
+  document.getElementById('loggedOutView').style.display = 'none'
+  document.getElementById('loggedInView').style.display = 'flex'
+  document.getElementById('welcomeMsg').textContent = `Signed in as ${user.user_metadata?.full_name || user.email}`
+}
+
+function renderLoggedOut() {
+  document.getElementById('loggedOutView').style.display = 'block'
+  document.getElementById('loggedInView').style.display = 'none'
+}
+
+window.switchTab = function (next) {
+  mode = next
+  document.getElementById('tabSignup').classList.toggle('active', next === 'signup')
+  document.getElementById('tabLogin').classList.toggle('active', next === 'login')
+  document.getElementById('fullName').style.display = next === 'signup' ? 'block' : 'none'
+  document.getElementById('authSubmit').textContent = next === 'signup' ? 'Sign Up Now' : 'Log In'
+  showMsg('', '')
+}
+
+window.continueWithGoogle = function () {
+  netlifyIdentity.oauthLogin('google')
+}
+
+window.submitAuth = async function () {
+  const email = document.getElementById('email').value.trim()
   const password = document.getElementById('password').value
-  const { data, error } = await supabase.auth.signUp({ email, password })
-  
-  if(error) {
-    document.getElementById('msg').innerText = error.message
-  } else {
-    document.getElementById('msg').innerText = "Check your email to confirm! ✅"
+  const fullName = document.getElementById('fullName').value.trim()
+
+  if (!email || !password) {
+    showMsg('Please enter an email and password.', 'error')
+    return
+  }
+
+  try {
+    if (mode === 'signup') {
+      const user = await netlifyIdentity.signup(email, password, { full_name: fullName })
+      if (user.emailVerified) {
+        renderUser(user)
+      } else {
+        showMsg('Check your email to confirm your account. ✅', 'success')
+      }
+    } else {
+      const user = await netlifyIdentity.login(email, password)
+      renderUser(user)
+    }
+  } catch (error) {
+    if (error instanceof netlifyIdentity.AuthError) {
+      if (error.status === 401) showMsg('Invalid email or password.', 'error')
+      else if (error.status === 403) showMsg('Signups are not allowed for this site.', 'error')
+      else if (error.status === 422) showMsg('Invalid input. Check your email and password.', 'error')
+      else showMsg(error.message, 'error')
+    } else if (error instanceof netlifyIdentity.MissingIdentityError) {
+      showMsg('Identity is not enabled on this site yet.', 'error')
+    } else {
+      showMsg('Something went wrong. Please try again.', 'error')
+    }
   }
 }
+
+window.logOut = async function () {
+  await netlifyIdentity.logout()
+  renderLoggedOut()
+}
+
+;(async () => {
+  try {
+    const result = await netlifyIdentity.handleAuthCallback()
+    if (result?.user) {
+      renderUser(result.user)
+      return
+    }
+  } catch (error) {
+    showMsg(error?.message || 'Authentication failed.', 'error')
+  }
+
+  const user = await netlifyIdentity.getUser()
+  if (user) renderUser(user)
+})()
 </script>
+
   <!-- 2. IMAGE RESIZER -->
   <div class="card">
     <h2>🖼️ Image Resizer</h2>
