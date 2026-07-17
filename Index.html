@@ -189,6 +189,8 @@ const sinhalaMap={"kh":"ඛ","gh":"ඝ","ch":"ච","Ch":"ඡ","jh":"ඣ","Th":"�
 function convertToUnicode(){ let text=document.getElementById('singlishInput').value.toLowerCase(); Object.keys(sinhalaMap).sort((a,b)=>b.length-a.length).forEach(k=>{text=text.replace(new RegExp(escapeRegExp(k),'g'),sinhalaMap[k]);}); document.getElementById('unicodeOutput').value=text.replace(/Z/g,"්"); }
 function copyText(){ navigator.clipboard.writeText(document.getElementById('unicodeOutput').value); alert('Copied to clipboard!'); }
 // ======= video converter ======
+</script>
+  <script>
 <div class="tool-card">
   <h3>🎵 Video to MP3 Converter</h3>
   <p>Convert any video to MP3 audio. 100% Private & Free</p>
