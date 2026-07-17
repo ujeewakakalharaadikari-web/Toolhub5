@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Video to MP3 Converter - ToolHub5</title>
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
+<style>
+  body{font-family:sans-serif;background:#0f172a;color:#fff;text-align:center;padding:40px}
+ .box{background:#1e293b;padding:30px;border-radius:16px;max-width:500px;margin:auto}
+  input{margin:20px 0}
+ .btn{background:#38bdf8;color:#000;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-weight:bold}
+ .btn:disabled{background:#475569;cursor:not-allowed}
+  #log{font-size:14px;color:#94a3b8;margin-top:15px}
+</style>
+</head>
+<body>
+  <div class="box">
+    <h2>🎵 Video to MP3 Converter</h2>
+    <p>100% Private. Your video never leaves your browser.</p>
+    <input type="file" id="uploader" accept="video/*">
+    <br>
+    <button class="btn" id="convertBtn" onclick="convertToMP3()">Convert to MP3</button>
+    <p id="log">Load FFmpeg...</p>
+    <a id="download" style="display:none" class="btn">Download MP3</a>
+  </div>
+
+<script>
+const { createFFmpeg, fetchFile } = FFmpeg;
+const ffmpeg = createFFmpeg({ log: true });
+
+const log = (msg) => document.getElementById('log').innerText = msg;
+
+(async () => {
+  log('Loading FFmpeg...');
+  await ffmpeg.load();
+  log('Ready! Select a video file.');
+})();
+
+async function convertToMP3() {
+  const file = document.getElementById('uploader').files[0];
+  if (!file) return alert('Please select a video first!');
+
+  const btn = document.getElementById('convertBtn');
+  btn.disabled = true;
+  log('Converting... This may take 1-2 minutes');
+
+  ffmpeg.FS('writeFile', 'input.mp4', await fetchFile(file));
+  await ffmpeg.run('-i', 'input.mp4', '-q:a', '0', '-map', 'a', 'output.mp3');
+
+  const data = ffmpeg.FS('readFile', 'output.mp3');
+  const url = URL.createObjectURL(new Blob([data.buffer], { type: 'audio/mp3' }));
+
+  const download = document.getElementById('download');
+  download.href = url;
+  download.download = file.name.replace(/\.[^/.]+$/, "") + ".mp3";
+  download.style.display = 'inline-block';
+  download.innerText = 'Download MP3 ✅';
+
+  log('Done!');
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
